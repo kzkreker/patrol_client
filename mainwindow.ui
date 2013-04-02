@@ -66,6 +66,25 @@
       <property name="title">
        <string>Поле карты</string>
       </property>
+      <widget class="Marble::MarbleWidget" name="MarbleWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>20</y>
+         <width>591</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>The Earth</string>
+       </property>
+       <property name="whatsThis">
+        <string>The Marble widget displays a virtual globe.</string>
+       </property>
+       <property name="mapThemeId">
+        <string>earth/openstreetmap/openstreetmap.dgml</string>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
@@ -230,7 +249,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>19</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -245,6 +264,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Marble::MarbleWidget</class>
+   <extends>QWidget</extends>
+   <header>MarbleWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

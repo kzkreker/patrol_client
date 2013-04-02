@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QByteArray>
 #include <QKeyEvent>
+#include <marble/MarbleWidget.h>
 
 namespace Ui {
 class MainWindow;
