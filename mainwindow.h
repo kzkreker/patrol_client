@@ -9,6 +9,10 @@
 #include <QKeyEvent>
 #include <marble/MarbleWidget.h>
 
+#include <QTimer>
+
+#include <QtSerialPort/QSerialPort>
+
 namespace Ui {
 class MainWindow;
 }
@@ -32,12 +36,20 @@ private slots:
     void strafeL();
     void strafeR();
     void stop();
-
+    void startSlave();
+    void readRequest();
     void keyPressEvent(QKeyEvent* e);
+
+private:
+    void processError(const QString &s);
 
 private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *nam;
+
+    QSerialPort serial;
+    QByteArray request;
+    QTimer timer;
 };
 
 #endif // MAINWINDOW_H

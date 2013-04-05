@@ -70,7 +70,7 @@
        <attribute name="title">
         <string>Карта</string>
        </attribute>
-       <widget class="Marble::MarbleWidget" name="MarbleWidget_2">
+       <widget class="Marble::MarbleWidget" name="MarbleWidget">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -174,17 +174,7 @@
          <string>Миникарта</string>
         </property>
        </widget>
-       <widget class="QComboBox" name="comboBox_2">
-        <property name="geometry">
-         <rect>
-          <x>600</x>
-          <y>440</y>
-          <width>371</width>
-          <height>27</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="gps_status">
         <property name="geometry">
          <rect>
           <x>500</x>
@@ -467,7 +457,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="tab_9">
         <attribute name="title">
@@ -483,6 +473,63 @@
         <attribute name="title">
          <string>Радар</string>
         </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_16">
+        <attribute name="title">
+         <string>GPS</string>
+        </attribute>
+        <widget class="QLabel" name="lat_label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>66</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lon_label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>60</y>
+           <width>66</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="compass_label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>90</y>
+           <width>66</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="speed_label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>120</y>
+           <width>66</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
        </widget>
       </widget>
      </widget>
@@ -622,25 +669,25 @@
            <string>Дата:</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="gpsname_label">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>126</y>
-            <width>41</width>
+            <y>116</y>
+            <width>71</width>
             <height>17</height>
            </rect>
           </property>
           <property name="text">
-           <string>Порт: </string>
+           <string>Порт GPS: </string>
           </property>
          </widget>
-         <widget class="QComboBox" name="comboBox">
+         <widget class="QComboBox" name="gpsname_comboBox">
           <property name="geometry">
            <rect>
-            <x>50</x>
-            <y>120</y>
-            <width>191</width>
+            <x>20</x>
+            <y>140</y>
+            <width>81</width>
             <height>27</height>
            </rect>
           </property>
@@ -649,7 +696,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>160</y>
+            <y>230</y>
             <width>231</width>
             <height>41</height>
            </rect>
@@ -665,7 +712,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>230</y>
+            <y>300</y>
             <width>231</width>
             <height>41</height>
            </rect>
@@ -681,7 +728,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>300</y>
+            <y>370</y>
             <width>231</width>
             <height>41</height>
            </rect>
@@ -697,7 +744,7 @@
           <property name="geometry">
            <rect>
             <x>50</x>
-            <y>200</y>
+            <y>270</y>
             <width>191</width>
             <height>27</height>
            </rect>
@@ -707,7 +754,7 @@
           <property name="geometry">
            <rect>
             <x>50</x>
-            <y>274</y>
+            <y>344</y>
             <width>191</width>
             <height>27</height>
            </rect>
@@ -717,7 +764,7 @@
           <property name="geometry">
            <rect>
             <x>50</x>
-            <y>340</y>
+            <y>410</y>
             <width>191</width>
             <height>27</height>
            </rect>
@@ -749,6 +796,75 @@
            </rect>
           </property>
          </widget>
+         <widget class="QLabel" name="gpsname_label_">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>176</y>
+            <width>111</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Порт компаса:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="compassname_comboBox">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>200</y>
+            <width>81</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="gpsspeed_label">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>114</y>
+            <width>101</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>скорость порта: </string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="gpsspeed_comboBox">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>140</y>
+            <width>81</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="compassspeed_label">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>175</y>
+            <width>111</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>скорость порта: </string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="compassspeed_comboBox">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>200</y>
+            <width>81</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
         </widget>
        </widget>
        <widget class="QGroupBox" name="groupBox_8">
@@ -769,7 +885,7 @@
            <x>0</x>
            <y>21</y>
            <width>711</width>
-           <height>431</height>
+           <height>401</height>
           </rect>
          </property>
          <property name="currentIndex">
@@ -790,6 +906,45 @@
            <string>Радар</string>
           </attribute>
          </widget>
+        </widget>
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="geometry">
+          <rect>
+           <x>240</x>
+           <y>430</y>
+           <width>171</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Сброс в стандартные</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_8">
+         <property name="geometry">
+          <rect>
+           <x>600</x>
+           <y>430</y>
+           <width>98</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Отмена</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_9">
+         <property name="geometry">
+          <rect>
+           <x>420</x>
+           <y>430</y>
+           <width>171</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Применить настройки</string>
+         </property>
         </widget>
        </widget>
       </widget>
@@ -863,9 +1018,6 @@
      </widget>
     </widget>
    </widget>
-   <zorder>MainTabs</zorder>
-   <zorder>GeoTabs</zorder>
-   <zorder>GeoTabs</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
