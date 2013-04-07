@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
-CONFIG += serialport
+QT       += core gui network sql
+CONFIG += serialport  console
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,10 +15,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    database.cpp \
+    mypaintlayer.cpp
 
 HEADERS  += mainwindow.h \
-    servo.h
+    relay.h \
+    GPS.h \
+    database.h \
+    mypaintlayer.h
 
 FORMS    += mainwindow.ui
 

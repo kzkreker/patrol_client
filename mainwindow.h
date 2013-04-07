@@ -8,10 +8,14 @@
 #include <QByteArray>
 #include <QKeyEvent>
 #include <marble/MarbleWidget.h>
-
 #include <QTimer>
-
 #include <QtSerialPort/QSerialPort>
+#include <QDebug>
+#include <QtSerialPort/QSerialPortInfo>
+#include <math.h>
+#include "mypaintlayer.h"
+
+#include "database.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,11 +42,12 @@ private slots:
     void stop();
     void startSlave();
     void readRequest();
+    QString convertGRAD(QString flag, QString cord);
     void keyPressEvent(QKeyEvent* e);
 
 private:
     void processError(const QString &s);
-
+    MyPaintLayer* layer;
 private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *nam;
@@ -50,6 +55,7 @@ private:
     QSerialPort serial;
     QByteArray request;
     QTimer timer;
+    DataBase connector;
 };
 
 #endif // MAINWINDOW_H
