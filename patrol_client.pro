@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network sql
+QT       += core gui network sql xml
 CONFIG += serialport  console
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -13,18 +13,27 @@ TARGET = patrol_client
 
 TEMPLATE = app
 
+INCLUDEPATH += . ../libmaia/
+LIBS += ../libmaia/libmaia.a
+LIBS     += -lmarblewidget -lQtGui -lQtCore
+
+
+DEPENDPATH += .
+INCLUDEPATH += .
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    database.cpp \
-    mypaintlayer.cpp
+           mainwindow.cpp \
+           database.cpp \
+           mypaintlayer.cpp \
+           client.cpp
 
 HEADERS  += mainwindow.h \
-    relay.h \
-    GPS.h \
-    database.h \
-    mypaintlayer.h
+            relay.h \
+            GPS.h \
+            database.h \
+            mypaintlayer.h \
+            client.h
 
 FORMS    += mainwindow.ui
 
-LIBS     += -lmarblewidget -lQtGui -lQtCore
+

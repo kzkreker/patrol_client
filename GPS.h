@@ -65,7 +65,7 @@ void  MainWindow::readRequest(){
 
     request.append(serial.readAll());
 
-if (request.size() >= 70) {
+if (request.size() >= 71) {
     qDebug()<<request;
     if (request[0] == '$')
         {
@@ -75,9 +75,9 @@ if (request.size() >= 70) {
          // c.insert(gps_collection, gps2bson(gps_data));
          qDebug()<<gps_data;
          if(gps_data[11][1]=='*'){
-             double speed=gps_data[8].toDouble();
+             double speed=gps_data[7].toDouble();
              speed=speed/0.5399614;
-             gps_data[8]=gps_data[8].setNum(speed);
+             gps_data[7]=gps_data[7].setNum(speed);
 
 
 
@@ -86,7 +86,7 @@ if (request.size() >= 70) {
              gps_data[3]= convertGRAD(gps_data[4],gps_data[3]);
 
 
-             connector.addGPScordinaes(gps_data[5],gps_data[3],gps_data[1],gps_data[9],gps_data[8],gps_data[10],"false","0");
+             connector.addGPScordinaes(gps_data[5],gps_data[3],gps_data[1],gps_data[9],gps_data[7],gps_data[8],"false","7");
 
              layer->latitude = gps_data[5].toDouble();
              layer->longitude = gps_data[3].toDouble();

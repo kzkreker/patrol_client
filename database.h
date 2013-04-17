@@ -1,10 +1,11 @@
-#ifndef DATABASE_H
+ #ifndef DATABASE_H
 #define DATABASE_H
 
 #include <QtSql>
 #include <QObject>
 #include <QDebug>
 #include <QDate>
+#include "client.h"
 
 class DataBase : public QObject
 {
@@ -23,7 +24,8 @@ public slots:
     //void addSettings();
     bool activateConnection();
     QString convertDate(QString, QString);
-
+    private:
+    Client rpcclient;
 };
 
 #endif // DATABASE_H

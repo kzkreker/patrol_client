@@ -1,5 +1,5 @@
 #include "database.h"
-
+#include "client.h"
 
 DataBase::DataBase(QObject *parent) :
     QObject(parent)
@@ -23,6 +23,7 @@ bool DataBase::activateConnection()
     }
 
     return true;
+
 }
 
 void DataBase::closeConnection(){
@@ -32,9 +33,10 @@ void DataBase::closeConnection(){
 void DataBase::addGPScordinaes(QString lat,QString lon, QString time, QString date,  QString speed, QString course, QString sendflag, QString id)
 {
     QSqlQuery query;
-    QString dateConv =convertDate(time,date);
-    query.exec("insert into coordinates values('"+dateConv+"',"+speed+","+course+","+sendflag+","+id+",'"+lat+"', '"+lon+"')");
+    QString dateCV =convertDate(time,date);
 
+    query.exec("insert into coordinates values('"+dateCV+"',"+speed+","+course+","+sendflag+","+id+",'"+lat+"', '"+lon+"')");
+    rpcclient.sendGPScordinaes(lat,lon,dateCV,speed,course,id);
 }
 QString DataBase::convertDate(QString time, QString date)
 {

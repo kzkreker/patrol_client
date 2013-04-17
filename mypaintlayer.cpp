@@ -40,6 +40,8 @@ GeoDataCoordinates MyPaintLayer::approximate(const GeoDataCoordinates &base, qre
                 base.latitude(deg) + dist * cos(angle), 0.0, deg);
 }
 
+int i=0;
+
 bool MyPaintLayer::render( GeoPainter *painter, ViewportParams *viewport,
     const QString& renderPos, GeoSceneLayer * layer )
 {
@@ -50,7 +52,18 @@ bool MyPaintLayer::render( GeoPainter *painter, ViewportParams *viewport,
     // QTime now = QTime::currentTime();
 
     painter->setPen(Qt::green);
-    painter->drawEllipse(home, 15, 15);
+    painter->drawEllipse(home, 50, 50);
+    QImage marker;
+    marker.load("marker.png");
+    QTransform myTransform;
+
+    myTransform.rotate(i);
+
+    if(i>350)
+    {i=0;}
+    i++;
+    marker=marker.transformed(myTransform);
+    painter->drawImage(home, marker);
 
     painter->setRenderHint(QPainter::Antialiasing, true);
 
