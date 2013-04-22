@@ -35,6 +35,7 @@ public:
 
     double latitude;
     double longitude;
+    double course;
 
 private:
     MarbleWidget* m_widget;

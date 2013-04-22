@@ -41,22 +41,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->strafeRButton,SIGNAL(pressed()),this,SLOT(strafeR()));
     connect(ui->strafeRButton,SIGNAL(released()),this,SLOT(stop()));
+
     //вывод доступных портов
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
         ui->gpsname_comboBox->addItem(info.portName());
 
+
+    // гдето тут функция получения настроек
+    idmain ="3";
+
     //чтение порта
+    timer.setSingleShot(true);
     connect(&serial, SIGNAL(readyRead()),this, SLOT(readRequest()));
-    startSlave();
+    connect(&timer, SIGNAL(timeout()),this, SLOT(processTimeout()));
+    startSlave("ttyUSB0");
 
-    connector.activateConnection();
+    //создаем объект для работы с БД
+    connector.activateConnection(idmain);
 
+    //рисуем на слоях глобуса
     layer = new MyPaintLayer(ui->MarbleWidget);
     ui->MarbleWidget->addLayer(layer);
     ui->MarbleWidget->installEventFilter(layer);
 
+    //отсечка прорисовки
     seconds.setInterval(1000);
-
     QObject::connect(&seconds, SIGNAL(timeout()), ui->MarbleWidget, SLOT(update()));
     seconds.start();
 

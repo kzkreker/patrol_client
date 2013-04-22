@@ -16,14 +16,13 @@ public:
 signals:
     
 public slots:
-    void addGPScordinaes(QString lat,QString lon, QString time, QString date,
-                         QString speed, QString course, QString sendflag, QString id);
+    void addGPScordinaes(QString lat,QString lon, QString speed, QString course, QString sendflag, QString id);
 
     void closeConnection();
     //void readSettings();
     //void addSettings();
-    bool activateConnection();
-    QString convertDate(QString, QString);
+    bool activateConnection(QString id);
+    QString getDateTime();
     private:
     Client rpcclient;
 };

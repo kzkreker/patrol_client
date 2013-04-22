@@ -31,6 +31,7 @@ public:
     
 private slots:
 
+    //слоты управления шасси
     void forvard();
     void back();
     void leftUp();
@@ -40,22 +41,28 @@ private slots:
     void strafeL();
     void strafeR();
     void stop();
-    void startSlave();
+
+    // работа с последовательным портом
+    void startSlave(QString portName);
     void readRequest();
+    void processTimeout();
+    //прочее
     QString convertGRAD(QString flag, QString cord);
     void keyPressEvent(QKeyEvent* e);
 
 private:
     void processError(const QString &s);
     MyPaintLayer* layer;
-private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *nam;
-
     QSerialPort serial;
-    QByteArray request;
     QTimer timer;
+
     DataBase connector;
+    QString idmain;
+    QString buffer;
+    QString request;
 };
 
 #endif // MAINWINDOW_H
+

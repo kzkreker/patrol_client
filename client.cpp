@@ -1,29 +1,36 @@
 #include "client.h"
-
+//////////////////////////////////////////////////////
+///конструктор клиента
+//////////////////////////////////////////////////////
 Client::Client(QObject* parent) : QObject(parent) {
-//	rpc = new MaiaXmlRpcClient(QUrl("http://phpxmlrpc.sourceforge.net/server.php"), this);
-//	rpc = new MaiaXmlRpcClient(QUrl("https://rpc.gandi.net/xmlrpc/2.0/"), this);
-    rpc = new MaiaXmlRpcClient(QUrl("http://dataBase:8082/RPC2"), this);
+    //	rpc = new MaiaXmlRpcClient(QUrl("http://phpxmlrpc.sourceforge.net/server.php"), this);
+    //	rpc = new MaiaXmlRpcClient(QUrl("https://rpc.gandi.net/xmlrpc/2.0/"), this);
 
+    //вундервафля работает поверх апача, однако цепляемся к самодельному серверу
+    rpc = new MaiaXmlRpcClient(QUrl("http://dataBase:8082/RPC2"), this);
+    // конфиги
     QSslConfiguration config = rpc->sslConfiguration();
     config.setProtocol(QSsl::AnyProtocol);
+
     rpc->setSslConfiguration(config);
 
+    //сигнал-слот обработка ошибок
     connect(rpc, SIGNAL(sslErrors(QNetworkReply *, const QList<QSslError> &)),
             this, SLOT(handleSslErrors(QNetworkReply *, const QList<QSslError> &)));
  }
 
+///////////////////////////////////////////////////
+///Отправка кординат
+///////////////////////////////////////////////////
 bool Client::sendGPScordinaes(QString lat, QString lon, QString dateCV, QString speed, QString course, QString id) {
     QVariantList args;
-
-    args.clear();
-    args<<lat;
-    args<<lon;
-    args<<dateCV;
-    args<<speed;
-    args<<course;
+    //Заполняем список данными о текущем положении
+    args.clear(); args<<lat;
+    args<<lon;    args<<dateCV;
+    args<<speed;  args<<course;
     args<<id;
 
+    //отправляем данные на сервер
     rpc->call("transport.curentGPSResiv", args,
                 this, SLOT(curentGPSSendResponse(QVariant &)),
                 this, SLOT(testFault(int, const QString &)));
@@ -34,7 +41,9 @@ bool Client::sendGPScordinaes(QString lat, QString lon, QString dateCV, QString 
 void Client::testResponse(QVariant &arg) {
         qDebug() << arg.toString();
 }
-
+/////////////////////////////////////////////////////
+///обработка сбоев
+/////////////////////////////////////////////////////
 void Client::testFault(int error, const QString &message) {
         qDebug() << "EEE:" << error << "-" << message;
 }

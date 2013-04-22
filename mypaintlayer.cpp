@@ -1,5 +1,8 @@
 #include "mypaintlayer.h"
 
+///////////////////////////////////////////////
+///Конструктор слоя
+///////////////////////////////////////////////
 MyPaintLayer::MyPaintLayer(MarbleWidget* widget) : m_widget(widget), m_index(0)
 {
     // nothing to do
@@ -16,6 +19,9 @@ QStringList MyPaintLayer::renderPosition() const
     return QStringList() << layers.at(index);
 }
 
+///////////////////////////////////
+///Обработка событий при работе с картой
+///////////////////////////////////
 bool MyPaintLayer::eventFilter(QObject *obj, QEvent *event)
 {
     // Adjust the current layer when '+' is pressed
@@ -30,7 +36,9 @@ bool MyPaintLayer::eventFilter(QObject *obj, QEvent *event)
 
     return false;
 }
-
+///////////////////////////////////////////
+///
+///////////////////////////////////////////
 GeoDataCoordinates MyPaintLayer::approximate(const GeoDataCoordinates &base, qreal angle, qreal dist) const
 {
     // This is just a rough estimation that ignores projections.
@@ -40,43 +48,25 @@ GeoDataCoordinates MyPaintLayer::approximate(const GeoDataCoordinates &base, qre
                 base.latitude(deg) + dist * cos(angle), 0.0, deg);
 }
 
-int i=0;
-
+////////////////////////////////////////////
+///Отрисовка маркера и текущего положения
+////////////////////////////////////////////
 bool MyPaintLayer::render( GeoPainter *painter, ViewportParams *viewport,
     const QString& renderPos, GeoSceneLayer * layer )
 {
     // Have window title reflect the current paint layer
     m_widget->setWindowTitle(renderPosition().first());
-
+    painter->setRenderHint(QPainter::Antialiasing, true);
     GeoDataCoordinates home(latitude,longitude , 0.0, GeoDataCoordinates::Degree);
-    // QTime now = QTime::currentTime();
 
-    painter->setPen(Qt::green);
-    painter->drawEllipse(home, 50, 50);
     QImage marker;
-    marker.load("marker.png");
+    marker.load("marker_active.png");
     QTransform myTransform;
 
-    myTransform.rotate(i);
+    myTransform.rotate(course);
 
-    if(i>350)
-    {i=0;}
-    i++;
     marker=marker.transformed(myTransform);
     painter->drawImage(home, marker);
-
-    painter->setRenderHint(QPainter::Antialiasing, true);
-
-    // Large circle built by 60 small circles
-    // painter->setPen( QPen(QBrush(QColor::fromRgb(255,255,255,200)), 3.0, Qt::SolidLine, Qt::RoundCap ) );
-    // for (int i=0; i<60; ++i)
-    // painter->drawEllipse(approximate(home, M_PI * i / 30.0, 1.0), 5, 5);
-
-    // hour, minute, second hand
-    // painter->drawLine(home, approximate(home, M_PI * now.minute() / 30.0, 0.75));
-    // painter->drawLine(home, approximate(home, M_PI * now.hour() / 6.0, 0.5));
-    // painter->setPen(QPen(QBrush(Qt::red), 4.0, Qt::SolidLine, Qt::RoundCap ));
-    // painter->drawLine(home, approximate(home, M_PI * now.second() / 30.0, 1.0));
 
     return true;
 }

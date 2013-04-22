@@ -9,7 +9,7 @@ DataBase::DataBase(QObject *parent) :
  QSqlDatabase db;
 
 
-bool DataBase::activateConnection()
+bool DataBase::activateConnection(QString id)
 {
     db = QSqlDatabase::addDatabase("QPSQL");
     db.setDatabaseName("GPSdata");
@@ -22,6 +22,12 @@ bool DataBase::activateConnection()
         return -1;
     }
 
+   //запрос создает таблицу для хранения кординат транспорта
+    QSqlQuery query;
+    query.exec("CREATE TABLE IF NOT EXISTS  vehicle_"+ id + " ( data timestamp without time zone NOT NULL,"+
+               "speed double precision NOT NULL, course double precision,  sflag boolean,  id integer NOT NULL,"+
+               "lat character varying(12), lon character varying(12), CONSTRAINT id_key"+ id +" PRIMARY KEY (id , data ))"+
+               "WITH ( OIDS=FALSE); ALTER TABLE vehicle_"+ id +" OWNER TO postgres;");
     return true;
 
 }
@@ -30,39 +36,30 @@ void DataBase::closeConnection(){
     db.close();
 }
 
-void DataBase::addGPScordinaes(QString lat,QString lon, QString time, QString date,  QString speed, QString course, QString sendflag, QString id)
+/////////////////////////////////////////////////
+///Отправка данных в БД и на удаленный сервер
+/////////////////////////////////////////////////
+void DataBase::addGPScordinaes(QString lat,QString lon, QString speed, QString course, QString sendflag, QString id)
 {
     QSqlQuery query;
-    QString dateCV =convertDate(time,date);
+    QString dateCV =getDateTime();
 
-    query.exec("insert into coordinates values('"+dateCV+"',"+speed+","+course+","+sendflag+","+id+",'"+lat+"', '"+lon+"')");
+    //отправка кординат
+    query.exec("insert into coordinates values('"+dateCV+"',"+speed+","+course+","
+               +sendflag+","+id+",'"+lat+"', '"+lon+"')");
+
+    //отправка кординат на сервер
     rpcclient.sendGPScordinaes(lat,lon,dateCV,speed,course,id);
 }
-QString DataBase::convertDate(QString time, QString date)
+
+/////////////////////////////////////////////////////
+///Получаем текущую дату с ПК
+/////////////////////////////////////////////////////
+QString DataBase::getDateTime()
 {
-    QString res,timeConv, dateConv ;
-    timeConv[0] = time[0];
-    timeConv[1] = time[1];
-    timeConv[2] = ':';
-    timeConv[3] = time[2];
-    timeConv[4] = time[3];
-    timeConv[5] = ':';
-    timeConv[6] = time[4];
-    timeConv[7] = time[5];
+    QDateTime Datatime= QDateTime::currentDateTime();
+    QString res=  Datatime.toString("yyyy-MM-dd hh:mm:ss");
 
-    dateConv[0]='2';
-    dateConv[1]='0';
-    dateConv[2]=date[4];
-    dateConv[3]=date[5];
-    dateConv[4]='-';
-    dateConv[5]=date[2];
-    dateConv[6]=date[3];
-    dateConv[7]='-';
-    dateConv[8]=date[0];
-    dateConv[9]=date[1];
-
-    //dateConv = "20"+date[4]+time[5]+'-'+time[2]+time[3]+'-'+time[0]+time[1];
-    res = dateConv+' '+timeConv;
     qDebug()<<res;
     return res;
 }
