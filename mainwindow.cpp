@@ -1,8 +1,8 @@
 #include "mainwindow.h"
-
-#include "ui_mainwindow.h"
 #include "relay.h"
 #include "GPS.h"
+#include "picweb.h"
+#include "hardware.h"
 
 using namespace Marble;
 
@@ -48,16 +48,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // гдето тут функция получения настроек
-    idmain ="3";
+    idmain ="0";
+    portname ="ttyUSB0";
+    statusURL ="http://192.168.1.66/status.xml";
+    connector.idmain=idmain;
 
     //чтение порта
     timer.setSingleShot(true);
     connect(&serial, SIGNAL(readyRead()),this, SLOT(readRequest()));
     connect(&timer, SIGNAL(timeout()),this, SLOT(processTimeout()));
-    startSlave("ttyUSB0");
+
+    startSlave(portname);
 
     //создаем объект для работы с БД
-    connector.activateConnection(idmain);
+    connector.activateConnection();
+
+    //настройка элемента выбора даты архива
+    ui->timeNow->setMinimumDate(QDate::currentDate().addYears(-1));
+    ui->timeNow->setMaximumDate(QDate::currentDate().addYears(5));
+    ui->timeNow->setMinimumTime(QTime::currentTime().addSecs(-3600));
+    ui->timeNow->setMaximumTime(QTime::currentTime().addSecs(3600));
+    ui->timeNow->setDateTime(QDateTime::currentDateTime());
+    ui->timeNow->setDisplayFormat("yyyy-MM-dd hh:mm:ss");
 
     //рисуем на слоях глобуса
     layer = new MyPaintLayer(ui->MarbleWidget);
@@ -66,7 +78,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //отсечка прорисовки
     seconds.setInterval(1000);
+
     QObject::connect(&seconds, SIGNAL(timeout()), ui->MarbleWidget, SLOT(update()));
+    QObject::connect(&seconds, SIGNAL(timeout()), SLOT( getStatusXML()));
+    QObject::connect(&seconds, SIGNAL(timeout()), SLOT( sendALL()));
+
+    QObject::connect(nam, SIGNAL(finished(QNetworkReply*)),
+                     SLOT(StatusDownloaded(QNetworkReply*)));
+
     seconds.start();
 
  }

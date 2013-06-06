@@ -32,7 +32,9 @@ HEADERS  += mainwindow.h \
             GPS.h \
             database.h \
             mypaintlayer.h \
-            client.h
+            client.h \
+    picweb.h \
+    hardware.h
 
 FORMS    += mainwindow.ui
 

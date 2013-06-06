@@ -1,4 +1,7 @@
 #include "client.h"
+#include "mainwindow.h"
+#include "database.h"
+
 //////////////////////////////////////////////////////
 ///конструктор клиента
 //////////////////////////////////////////////////////
@@ -17,44 +20,82 @@ Client::Client(QObject* parent) : QObject(parent) {
     //сигнал-слот обработка ошибок
     connect(rpc, SIGNAL(sslErrors(QNetworkReply *, const QList<QSslError> &)),
             this, SLOT(handleSslErrors(QNetworkReply *, const QList<QSslError> &)));
- }
+
+}
 
 ///////////////////////////////////////////////////
 ///Отправка кординат
 ///////////////////////////////////////////////////
-bool Client::sendGPScordinaes(QString lat, QString lon, QString dateCV, QString speed, QString course, QString id) {
-    QVariantList args;
-    //Заполняем список данными о текущем положении
-    args.clear(); args<<lat;
-    args<<lon;    args<<dateCV;
-    args<<speed;  args<<course;
-    args<<id;
+bool Client::sendNow(QStringList GPS,QStringList PIC, QString idmain,QString dataCV) {
 
+    QVariantList args;
+    idmaincl=idmain;
+    //перегоняем в кошерные строки
+    QString PICstring;
+    QString GPString;
+     qDebug()<<"send";
+     qDebug()<<PIC;
+     qDebug()<<GPS;
+
+    if (PIC[0]!="fail"){
+    PICstring= PIC[0]+"|"+ PIC[1]+"|"+PIC[2]+"|"+PIC[3];} else {PICstring= PIC[0];}
+    if (GPS[0]!="fail"){
+    GPString= GPS[0]+"|"+ GPS[1]+"|"+GPS[2]+"|"+GPS[3];} else {GPString= GPS[0];}
+
+    qDebug()<<PICstring;
+    qDebug()<<GPString;
+   //Заполняем список данными о текущем положении
+    args.clear();
+    args<<GPString;
+    args<<PICstring;
+    args<<idmain;
+    args<<dataCV;
     //отправляем данные на сервер
-    rpc->call("transport.curentGPSResiv", args,
-                this, SLOT(curentGPSSendResponse(QVariant &)),
+    rpc->call("transport.curentGPSPICResiv", args,
+                this, SLOT(curentGPSPICSendResponse(QVariant &)),
                 this, SLOT(testFault(int, const QString &)));
 
 }
 
+bool Client::sendNot(QString PIC, QString GPS, QString idmain)
+{
+    QVariantList args;
+    args<<GPS;
+    args<<PIC;
+    args<<idmain;
 
-void Client::testResponse(QVariant &arg) {
-        qDebug() << arg.toString();
+    rpc->call("transport.sendNotGPSPICResiv", args,
+                this, SLOT(sendNotGPSPICSendResponse(QVariant &)),
+                this, SLOT(testFault(int, const QString &)));
 }
+
+/////////////////////////////////////////////////////
+///Ответ на отправку подтверждаем пересылку в БД
+////////////////////////////////////////////////////
+void Client::curentGPSPICSendResponse(QVariant &arg) {
+    qDebug()<<"resiv";
+    emit resivOKNow();
+    emit networkUP();
+}
+
+void Client::sendNotGPSPICSendResponse(QVariant &arg)
+{
+    qDebug()<<"resiv";
+    emit resivOKNot();
+}
+
 /////////////////////////////////////////////////////
 ///обработка сбоев
 /////////////////////////////////////////////////////
 void Client::testFault(int error, const QString &message) {
         qDebug() << "EEE:" << error << "-" << message;
+        emit networkFail();
 }
 
-void Client::towelResponse(QVariant &arg) {
-    qDebug() << "Next years Towel Day is on" << arg.toDateTime();
-}
+///////////////////////////////////////////////////
+///обработка сбоев  SSL c
+///////////////////////////////////////////////////
 
-void Client::curentGPSSendResponse(QVariant &arg) {
-    qDebug() << arg;
-}
 void Client::handleSslErrors(QNetworkReply *reply, const QList<QSslError> &errors) {
     qDebug() << "SSL Error:" << errors;
     reply->ignoreSslErrors(); // don't do this in real code! Fix your certs!

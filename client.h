@@ -8,19 +8,28 @@ class Client : public QObject {
 
     public:
         Client(QObject* parent = 0);
-
+    signals:
+        void resivOKNow();
+        void resivOKNot();
+        void networkFail();
+       void networkUP();
     public slots:
-        bool sendGPScordinaes(QString lat,QString lon, QString dateCV,
-                              QString speed, QString course, QString id);
+        bool sendNow(QStringList PIC, QStringList GPS, QString idmain,QString dataCV);
+        bool sendNot(QString PIC, QString GPS, QString idmain);
     private slots:
-        void testResponse(QVariant &);
+
         void testFault(int, const QString &);
-        void towelResponse(QVariant &);
+
+        //
         void handleSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
-        void curentGPSSendResponse(QVariant &);
+
+        //обрабатываем успешную передачу
+        void curentGPSPICSendResponse(QVariant &);
+        void sendNotGPSPICSendResponse(QVariant &);
 
     private:
         MaiaXmlRpcClient *rpc;
+        QString idmaincl;
 };
 
 #endif

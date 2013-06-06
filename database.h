@@ -12,19 +12,35 @@ class DataBase : public QObject
     Q_OBJECT
 public:
     explicit DataBase(QObject *parent = 0);
-    
+    QString idmain;
 signals:
     
 public slots:
-    void addGPScordinaes(QString lat,QString lon, QString speed, QString course, QString sendflag, QString id);
 
+    //основные рабочие функции
+    void sendGPSPICNow(QStringList GPS, QStringList PIC);
+
+    void sendGPSPICNot();
+    void sendMessage();
+
+    void updateNotSended();
+    void updateSended();
+    //закрытие подключения
     void closeConnection();
     //void readSettings();
     //void addSettings();
-    bool activateConnection(QString id);
+
+    //обслуживание
+    void  standartTables();
+    bool  activateConnection();
+
     QString getDateTime();
     private:
     Client rpcclient;
+    QString  dataTrans;
+    QStringList NotSendGPSTime;
+    QStringList NotSendPICTime;
+
 };
 
 #endif // DATABASE_H

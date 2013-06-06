@@ -50,7 +50,6 @@ void MainWindow::startSlave(QString portName)
             return;
         }
     }
-
     ui->gps_status->setText("GPS: ON");
 }
 
@@ -69,18 +68,18 @@ void MainWindow::processError(const QString &s)
 void  MainWindow::readRequest(){
  if (!timer.isActive()) timer.start(50);
         request.append(serial.readAll());
-        qDebug()<<"///"+request;
+
+
 
  if (request.size() >= 71 && request.size()<=75 ) {
-    qDebug()<<request;
+
     //далее начинаем парсить строку от указателя $, если таакой имеется
     if (request[0] == '$')
         {
          buffer=request;
+         ui->GPSlines->appendPlainText(request);
          QStringList gps_data = buffer.split(",");
          if (gps_data[0] == "$GPRMC" && gps_data[2] == "A") {
-
-         qDebug()<<gps_data;
 
          if(gps_data[11][1]=='*'){
              //конвертируем мили/ч км/ч
@@ -93,20 +92,29 @@ void  MainWindow::readRequest(){
              gps_data[3]="0"+gps_data[3];
              gps_data[3]= convertGRAD(gps_data[4],gps_data[3]);
 
-             //отправляем данные в БД
-             connector.addGPScordinaes(gps_data[5],gps_data[3], gps_data[7],
-                                       gps_data[8],"false",idmain);
+             //отправляем данные в общий список
+             cordinatesGPS.clear();
+             cordinatesGPS.append(gps_data[5]);
+             cordinatesGPS.append(gps_data[3]);
+             cordinatesGPS.append(gps_data[7]);
+             cordinatesGPS.append(gps_data[8]);
+             qDebug()<<cordinatesGPS;
+
              //перерисовываем маркер
              layer->latitude = gps_data[5].toDouble();
              layer->longitude = gps_data[3].toDouble();
              layer->course = gps_data[8].toDouble();
              }
-         }
+         } else {ui->gps_status->setText("GPS: No satelits");}
     }
    request.clear();
    }
 }
 
+
+////////////////////////////////////////////////
+///сброс буфера при превышении ожидания
+///////////////////////////////////////////////////
 void MainWindow::processTimeout()
 {
    request.clear();
@@ -124,6 +132,7 @@ QString MainWindow::convertGRAD(QString flag, QString cord)
     latgr[2]=cord[2];
 
     QString min, converted;
+
     //генирируем минутную в градусною состовляющую
     min[0]=cord[3];    min[1]=cord[4];
     min[2]='.';        min[3]=cord[6];
@@ -134,6 +143,7 @@ QString MainWindow::convertGRAD(QString flag, QString cord)
     convmin=convmin/60;
     min=min.setNum(convmin);
     converted=latgr+".";
+
     //доклеиваем строку
     for (int mn = 2;  mn < min.length(); mn++)
     {
@@ -142,10 +152,8 @@ QString MainWindow::convertGRAD(QString flag, QString cord)
 
     //если вдруг мы окажемся в другом полушарии...
     if (flag=="S" || flag=="W") { converted ="-" + converted;}
-    qDebug()<<converted;
 
     return converted;
-
 }
 
 #endif // GPS_H
